@@ -335,6 +335,40 @@ def is_valid_sentence(sentence):
 
         if re.search(p, sentence, re.IGNORECASE):
             return False
+        
+    # -----------------------------------------------------
+
+    # OCR corruption
+    # -----------------------------------------------------
+
+    ocr_patterns = [
+
+        r'\bhuz\s+r\b',
+        r'\bkg\s*/\s*cm\b',
+    ]
+
+    for p in ocr_patterns:
+
+        if re.search(p, sentence, re.IGNORECASE):
+            return False
+
+
+    # -----------------------------------------------------
+    # Emoticons / social emoji text
+    # -----------------------------------------------------
+
+    if re.search(r'[:;=8][-~]?[)\](DPp]', sentence):
+        return False
+
+
+    # -----------------------------------------------------
+    # Broken medical/forum formatting
+    # Example:
+    # ( /- 2 gün sapabilir)
+    # -----------------------------------------------------
+
+    if re.search(r'\(/\-\s*\d+', sentence):
+        return False
 
     # -----------------------------------------------------
     # Social media hash garbage
@@ -367,6 +401,56 @@ def is_valid_sentence(sentence):
 
         if re.search(p, sentence, re.IGNORECASE):
             return False
+        
+    # -----------------------------------------------------
+    # Profanity / toxic filtering
+    # -----------------------------------------------------
+
+    profanity_patterns = [
+        r'amina',
+        r'ebenin',
+        r'siktir',
+    ]
+
+    for p in profanity_patterns:
+        if re.search(p, sentence, re.IGNORECASE):
+            return False
+
+
+    # -----------------------------------------------------
+    # Code / programming snippets
+    # -----------------------------------------------------
+
+    if re.search(r'\breturn\b.*;', sentence):
+        return False
+
+    if re.search(r'//', sentence):
+        return False
+
+
+    # -----------------------------------------------------
+    # Business directory / company listings
+    # -----------------------------------------------------
+
+    if re.search(r'ltd\.?\s*şti', sentence, re.IGNORECASE):
+        return False
+
+
+    # -----------------------------------------------------
+    # List / enumeration patterns
+    # Example: 4) Yat Çekek Yeri:
+    # -----------------------------------------------------
+
+    if re.match(r'^\d+\)', sentence):
+        return False
+
+
+    # -----------------------------------------------------
+    # Severe OCR corruption (very light)
+    # -----------------------------------------------------
+
+    if re.search(r'\bbulunn\b', sentence):
+        return False
 
     # -----------------------------------------------------
     # Course/catalog/tabular style
