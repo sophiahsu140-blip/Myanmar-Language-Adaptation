@@ -1,0 +1,82 @@
+3.1 Word Pair Mining
+For the word translation pair extraction we assume
+that we have monolingual corpora for the source and target languages, D and D . We build contextualized cross-lingual word representations for
+each token in each sentence of both corpora by tak-
+ing the corresponding output vectors of the used
+model’s final layer. As explained in Section 3.2 we
+apply a linear layer on top of the used LM for align-
+ment purposes. We take the output of this linear
+layer as CCWR instead of the average of multiple
+LM layers in contrast to previous work (Vulić et al.,
+2020) in order to directly benefit from model up-
+dates as our method progresses. If a word is split
+into multiple subwords by the LM’s tokenizer we
+take the representation of the last subword token
+based on the findings of (Ács et al., 2021).2 For
+each token ws ∈ Ds we look for the most similar token wkt ,l ∈ Dt by calculating: wt = arg max cos(E s
+(1) where wx is the jth token of the ith sentence in D ,
+k,l t wi,j wm,n ∈Dt
+, E t wm,n
+)
+generating CCWRs
+Ews
+i,j
+mining with cosine similarity
+minimizing pairwise distances
+i,j x
+E(wx )isitsCCWRandcosisthecosinesimilarity of two vectors. Finally, we filter out low quality
+word pairs by keeping only those pairs which have a
+similarity value larger than a given threshold value
+(th = 0.2). We mine word pairs in both language di-
+11995
+Dm
+rections, i.e., we mine pairs for each ws ∈ Ds and i,j
+in the reverse direction as well for each wkt ,l ∈ Dt this way boosting the number of training examples. Due to the quadratic nature of the mining process, instead of using the full source and target corpora,
+we randomly sample 1K sentences in each iteration from Ds and Dt resulting in D ̃ s and D ̃ t respectively and use them for the word alignment instead of the full corpora. Calculating with 20 tokens per sen- tence on average means that 
+there are 20K source tokens for which we look for the most similar pair in the 20K candidate target tokens in each iteration. Furthermore, we keep the mining process simple, fast and memory efficient, i.e., we use cosine simi- larity instead of CSLS (Conneau et al., 2018a) and do not rely on previously introduced word align- ment techniques, such as SimAlign (Jalili Sabet et al., 2020). We present further analysis of the mining quality in Section 5.3 and experiments with up to 100K sample size instead of 1K per iteration and employ the efficient search method of Faiss (Johnson et al., 2019) in Appendix C.
+
+3.2 Model Training
+Motivated by mapping approaches (Mikolov et al., 2013b; Schuster et al., 2019) we use a dedicated linear layer on top of the pre-trained LM for both source and target languages in the given language pairtoimprovecross-lingualquality.3 Morepre- cisely, we feed the output representations of the LM’s last hidden layer to the dedicated linear layer depending on the language of 
+the input word, which has input and output sizes matching the LM’s hid- den size and has no bias term. Since we want to exploit the improved cross-linguality of the model in the mining step in each iteration, we initialize the dedicated linear layers with the identity matrix4 and use the output of the linear layers as CCWRs for word pair mining. Given the mined word pairs
+ we update the parameters of the dedicated linear layers while keeping the parameters of the LM frozen by minimizing the following loss function based on the work of Cao et al. (2020):
+L=
+X2
+(2)
+st
+(ws ,wt )∈Dm i,j k,l
+Ews −Ewt
+where Dm ⊆ D ̃ s × D ̃ t is the dataset containing the mined word pairs from step 1.
+We note that we experimented with the proposed model of Cao et al. (2020), i.e., updating the full model using no linear layer on top of the origi- nal LM architecture but it resulted in significant degradation of the model performance when using our mined training samples. The main difference with the original method of Cao et al. (2020) is that they use parallel sentences where most of the words are aligned, while in our case most sentence pairs that are extracted by our method contain only one aligned word pair and the rest are unaligned, thus not used for training. Our conjecture is that due to the smaller information ratio per sentence pair and the smaller number of covered unique words in the training process (see Section 5.3) the full model update is more susceptible to over-fitting, thus the use of language specific linear layers is crucial for our approach. This shows that the simpler linear layer and the static LM is needed to prevent over- fitting and degrading the quality of monolingual language subspaces in case of the mined training data. We summarize our complete iterative method in Algorithm 1.
+4 Experimental Setup
+4.1 Datasets and Model Parameters
+We test our proposed model on a wide range of lan- guages: Bengali, Basque, Macedonian, Malayalam, Afrikaans, Swahili, Kannada, Gujarati and Nepali. For each of the languages we used 1M randomly
+selected sentences from the full Wikipedia dumps as monolingual corpora (D and D ) which we tokenized with the IndicNLP toolkit (Kakwani et al., 2020) in case of the Indian subcontinent languages5 or with the Moses toolkit (Koehn et al., 2007) in case of the others.6 We show language and dataset statistics in Table 1. In Appendix D we present simulated low-resource experiments indicating the effectiveness of our approach when only a small amount of monolingual sentences are available.
+As the pre-trained LM we use bert-base- multilingual-cased (Devlin et al., 2019) which we refer to as mBERT in the following. To try to strengthen the baselines for underrepresented lan- guages we perform vocabulary extension and model fine-tuning using the monolingual data of the target low-resource language. We follow the approach and suggested model parameters of Wang et al. (2020), i.e., we extend mBERT’s original vocabulary with the most frequent 10K subword tokens of the low- resource language and run 100K fine-tuning steps on the full Wikipedia dumps using only the masked language modeling objective. We refer to the vo- cabulary extended models as eBERT.
+For our approach we tune model parameters us- ing the development set of the word retrieval task (see Section 4.2) on Nepali only and use the same parameters for the rest of the languages as well. The used parameters are the following: number of model update steps (N) 5K with batch size 2, gradient accumulation steps 6 (which means 60K extracted sentence pairs), 1K warm-up steps and learning rate 5 × 10−5. We used the Hugging- face library for the implementation of our tech- niques (Wolf et al., 2020). The runtime of our method ranges between 0.5 and 2 hours using a single GeForce GTX 1080 Ti.
+
+===================================
+core contribution of the ccwr paper
+monolingual corpora
+    ↓
+dynamic mining
+    ↓
+linear alignment training
+    ↓
+cross-lingual evaluation
+
+===================================
+A. Main CCWR alignment training
+This is your current run_align.py.
+Uses:
+frozen mBERT
+trainable linear layers
+dynamic mining
+This is the main proposed method.
+
+B. Optional vocabulary extension + MLM fine-tuning
+eBERT MLM fine-tuning
+unless you later decide to add:
+vocabulary extension
+continued MLM pretraining
+Burmese adaptation
+as an extended experiment.

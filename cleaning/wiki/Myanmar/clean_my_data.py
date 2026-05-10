@@ -9,7 +9,7 @@ from collections import Counter
 
 MIN_TOKENS = 4
 MAX_TOKENS = 120
-TARGET_SENTENCES = 20000
+TARGET_SENTENCES = 10000
 RANDOM_SEED = 42
 
 # Remove very duplicated village census style sentences
