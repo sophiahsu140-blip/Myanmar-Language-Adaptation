@@ -1,0 +1,28 @@
+# do encoding
+
+python - <<EOF
+import sentencepiece as spm
+
+sp = spm.SentencePieceProcessor()
+sp.load("mya_spm2.model")
+
+with open("myanmar_text.txt", "r") as fin, open("subword-data2.mya", "w") as fout:
+    for line in fin:
+        pieces = sp.encode(line.strip(), out_type=str)
+        fout.write(" ".join(pieces) + "\n")
+EOF
+
+#################
+
+python - <<EOF
+import sentencepiece as spm
+
+sp = spm.SentencePieceProcessor()
+sp.load("mya_spm_wiki.model")
+
+with open("wiki_my_clean.txt", "r") as fin, open("subword-wiki.mya", "w") as fout:
+    for line in fin:
+        pieces = sp.encode(line.strip(), out_type=str)
+        fout.write(" ".join(pieces) + "\n")
+EOF
+

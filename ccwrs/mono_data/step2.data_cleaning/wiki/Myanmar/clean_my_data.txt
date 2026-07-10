@@ -1,0 +1,34 @@
+This pipeline:
+cleans text
+removes noise
+splits into sentences
+filters invalid sentences
+removes duplicates
+randomly samples 20k sentences
+outputs final clean corpus for mining/pretraining
+
+==============
+
+✅ Cleans text — strips URLs, HTML tags, empty brackets, non-Burmese/OCR garbage characters, normalizes repeated punctuation/whitespace
+✅ Removes noise — the OCR garbage regex and template-heavy census-sentence filter (is_template_heavy)
+✅ Splits into sentences — on ၊။!? (Burmese-aware segmentation)
+✅ Filters invalid sentences — token count bounds (4–120), too much English, too many symbols, numeric-only lines, repeated-character runs
+✅ Removes duplicates — via a normalized (lowercased, punctuation-stripped) seen set
+✅ Randomly samples — shuffles with a fixed seed (42) then truncates
+✅ Outputs a final corpus
+
+:~/contextual_cross_lingual_word_retrieval/lowresCCWR/data$ 
+python clean_my_data.py mono/wiki_my_clean.txt mono/wiki_my_cleaned_40k.txt
+
+wc -l filename.txt
+
+python clean_vi_data.py mono/wiki_vi_clean.txt mono/wiki_vi_cleaned_10k.txt
+
+python clean_fa_data.py mono/wiki_fa_clean.txt mono/wiki_fa_cleaned_10k.txt
+
+python clean_jp_data.py mono/wiki_ja_clean.txt mono/wiki_ja_cleaned_40k.txt
+
+python clean_tr_data.py mono/wiki_tr_clean.txt mono/wiki_tr_cleaned_10k.txt
+
+python clean_zh_data.py mono/wiki_zh_clean.txt mono/wiki_zh_cleaned_10k.txt
+

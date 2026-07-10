@@ -1,0 +1,29 @@
+# run from outside /langrank
+
+python3 langrank_predict.py \
+  -o myanmar_text.txt \
+  -s subword-data2.mya \
+  -l mya \
+  -n 5 \
+  -t MT
+
+###########
+
+python3 langrank_predict.py \
+  -o wiki_my_clean.txt \
+  -s subword-wiki.mya \
+  -l mya \
+  -n 5 \
+  -t MT
+
+
+
+-o Original corpus (word-level)
+-s Subword-segmented corpus
+-l Language code of the target language.
+-n Return top 5 best transfer languages
+-t Task type.
+MT = Machine Translation
+POS
+DEP
+EL

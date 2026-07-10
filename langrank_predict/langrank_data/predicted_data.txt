@@ -1,0 +1,74 @@
+predicting...
+Ranking with single features:
+Overlap word-level
+0. ted_mya : score=0.00
+1. ted_urd : score=0.00
+2. ted_kaz : score=0.00
+Overlap subword-level
+0. ted_mya : score=0.04
+1. ted_urd : score=0.00
+2. ted_msa : score=0.00
+Transfer lang dataset size
+0. ted_ara : score=214111.00
+1. ted_heb : score=211820.00
+2. ted_rus : score=208458.00
+Transfer over target size ratio
+0. ted_ara : score=25.51
+1. ted_heb : score=25.23
+2. ted_rus : score=24.83
+Transfer target TTR distance
+0. ted_vie : score=0.00
+1. ted_fra : score=2.55
+2. ted_fas : score=3.29
+GENETIC
+0. ted_mya : score=0.00
+1. ted_cmn : score=0.80
+2. ted_eus : score=1.00
+SYNTACTIC
+0. ted_mya : score=0.00
+1. ted_kor : score=0.46
+2. ted_jpn : score=0.50
+FEATURAL
+0. ted_mya : score=0.00
+1. ted_mar : score=0.50
+2. ted_jpn : score=0.50
+PHONOLOGICAL
+0. ted_mya : score=0.00
+1. ted_ind : score=0.26
+2. ted_tha : score=0.26
+INVENTORY
+0. ted_mya : score=0.00
+1. ted_tha : score=0.34
+2. ted_ind : score=0.38
+GEOGRAPHIC
+0. ted_ben : score=0.00
+1. ted_mya : score=0.00
+2. ted_mar : score=0.10
+Ranking (top 5):
+1. ted_fas : score=-0.03
+	1. Transfer lang dataset size : score=0.45; 
+	2. Transfer over target size ratio : score=0.35; 
+	3. Overlap word-level : score=0.18
+2. ted_tur : score=-0.07
+	1. Transfer lang dataset size : score=0.38; 
+	2. Transfer over target size ratio : score=0.33; 
+	3. Transfer lang TTR : score=0.16
+3. ted_hun : score=-0.09
+	1. Transfer lang dataset size : score=0.43; 
+	2. Transfer over target size ratio : score=0.35; 
+	3. Overlap word-level : score=0.16
+4. ted_bul : score=-0.25
+	1. Transfer lang dataset size : score=0.43; 
+	2. Transfer over target size ratio : score=0.31; 
+	3. Overlap word-level : score=0.10
+5. ted_vie : score=-0.34
+	1. Transfer lang dataset size : score=0.39; 
+	2. Transfer over target size ratio : score=0.33; 
+	3. Transfer lang TTR : score=0.11
+ranked
+
+1. Persian (fas)
+2. Turkish (tur)
+3. Hungarian (hun)
+4. Bulgarian (bul)
+5. Vietnamese (vie)

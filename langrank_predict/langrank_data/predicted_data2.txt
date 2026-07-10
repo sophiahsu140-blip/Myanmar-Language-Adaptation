@@ -1,0 +1,108 @@
+Preparing candidate list...
+Collecting URIEL distance vectors...
+...geographic
+...genetic
+...inventory
+...syntactic
+...phonological
+...featural
+Collecting dataset distance vectors...
+Loading model...
+[LightGBM] [Warning] Ignoring unrecognized parameter 'max_conflict_rate' found in model string.
+[LightGBM] [Warning] Ignoring unrecognized parameter 'sparse_threshold' found in model string.
+[LightGBM] [Warning] Ignoring unrecognized parameter 'enable_load_from_binary_file' found in model string.
+[LightGBM] [Warning] Ignoring unrecognized parameter 'max_position' found in model string.
+predicting...
+Ranking with single features:
+Overlap word-level
+0. ted_mya : score=0.03
+1. ted_vie : score=0.00
+2. ted_ind : score=0.00
+Overlap subword-level
+0. ted_mya : score=0.16
+1. ted_urd : score=0.01
+2. ted_vie : score=0.01
+Transfer lang dataset size
+0. ted_ara : score=214111.00
+1. ted_heb : score=211820.00
+2. ted_rus : score=208458.00
+Transfer over target size ratio
+0. ted_ara : score=10.65
+1. ted_heb : score=10.54
+2. ted_rus : score=10.37
+Transfer target TTR distance
+0. ted_nob : score=0.00
+1. ted_mkd : score=0.00
+2. ted_tur : score=0.00
+GENETIC
+0. ted_mya : score=0.00
+1. ted_cmn : score=0.80
+2. ted_eus : score=1.00
+SYNTACTIC
+0. ted_mya : score=0.00
+1. ted_kor : score=0.46
+2. ted_jpn : score=0.50
+FEATURAL
+0. ted_mya : score=0.00
+1. ted_mar : score=0.50
+2. ted_jpn : score=0.50
+PHONOLOGICAL
+0. ted_mya : score=0.00
+1. ted_ind : score=0.26
+2. ted_tha : score=0.26
+INVENTORY
+0. ted_mya : score=0.00
+1. ted_tha : score=0.34
+2. ted_ind : score=0.38
+GEOGRAPHIC
+0. ted_ben : score=0.00
+1. ted_mya : score=0.00
+2. ted_mar : score=0.10
+Ranking (top 5):
+1. ted_vie : score=-0.05
+	1. Transfer lang dataset size : score=0.49; 
+	2. Transfer over target size ratio : score=0.28; 
+	3. Transfer lang TTR : score=0.15
+2. ted_fas : score=-0.09
+	1. Transfer lang dataset size : score=0.43; 
+	2. Transfer over target size ratio : score=0.26; 
+	3. Transfer lang TTR : score=0.15
+3. ted_mya : score=-0.09
+	1. Overlap subword-level : score=0.91; 
+	2. GENETIC : score=0.47; 
+	3. SYNTACTIC : score=0.08
+4. ted_tur : score=-0.31
+	1. Transfer lang dataset size : score=0.38; 
+	2. Transfer over target size ratio : score=0.35; 
+	3. Transfer lang TTR : score=0.19
+5. ted_bul : score=-0.34
+	1. Transfer lang dataset size : score=0.44; 
+	2. Transfer over target size ratio : score=0.26; 
+	3. Transfer target TTR distance : score=0.11
+ranked
+
+ted_vie → Vietnamese
+Country: Vietnam
+Language family: Austroasiatic
+
+ted_fas → Persian (Farsi)
+Country: Iran (also spoken in Afghanistan as Dari, and Tajikistan as Tajik)
+Language family: Indo-Iranian (Indo-European)
+
+ted_mya → Burmese (Myanmar language)
+Country: Myanmar
+Language family: Sino-Tibetan
+
+ted_tur → Turkish
+Country: Turkey
+Language family: Turkic
+
+ted_bul → Bulgarian
+Country: Bulgaria
+Language family: Slavic (Indo-European)
+
+1. Vietnamese (vie)
+2. Persian (fas)
+3. Burmese (mya)
+4. Turkish (tur)
+5. Bulgarian (bul)

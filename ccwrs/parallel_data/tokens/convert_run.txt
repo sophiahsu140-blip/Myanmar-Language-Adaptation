@@ -1,0 +1,6 @@
+source ~/nlp-env/bin/activate
+
+python convert_alt.py \
+    --src ALT/data_my.txt \
+    --trg ALT/data_zh.txt \
+    --output parallel/my-zh.tokens

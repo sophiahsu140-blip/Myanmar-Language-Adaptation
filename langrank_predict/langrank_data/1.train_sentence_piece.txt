@@ -1,0 +1,30 @@
+# run training
+
+python - <<EOF
+import sentencepiece as spm
+
+spm.SentencePieceTrainer.train(
+    input='myanmar_text.txt',
+    model_prefix='mya_spm2',
+    vocab_size=4000,
+    model_type='bpe'
+)
+EOF
+
+###############
+
+python - <<EOF
+import sentencepiece as spm
+
+spm.SentencePieceTrainer.train(
+    input='wiki_my_clean.txt',
+    model_prefix='mya_spm_wiki',
+    vocab_size=8000,
+    model_type='bpe',
+    character_coverage=0.9995
+)
+EOF
+
+
+ 10,578845
+258,296035

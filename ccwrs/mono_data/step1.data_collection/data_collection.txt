@@ -1,0 +1,1 @@
+Monolingual corpora for Vietnamese, Japanese, Chinese, Turkish, and Persian were collected from Wikipedia dumps. The raw Wikipedia XML dumps were processed using WikiExtractor to obtain plain text, which was then cleaned and filtered to create the final monolingual datasets used in the experiments.

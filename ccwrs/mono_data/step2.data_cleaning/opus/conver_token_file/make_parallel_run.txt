@@ -1,0 +1,3 @@
+python make_parallel.py parallel/fa-my/OpenSubtitles.fa-my.my parallel/fa-my/OpenSubtitles.fa-my.fa parallel/my-fa.tokens
+
+python make_parallel.py parallel/my-tr/OpenSubtitles.my-tr.my parallel/my-tr/OpenSubtitles.my-tr.tr parallel/my-tr.tokens

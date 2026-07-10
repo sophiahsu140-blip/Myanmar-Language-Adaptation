@@ -1,0 +1,21 @@
+awk '
+{
+    gsub(/[[:space:]]+/, " ");
+    if (length($0) > 20)
+        print;
+}
+' zh.txt > wiki_zh_clean_v1.txt
+
+head -n 100000 wiki_zh_clean.txt > wiki_zh_clean_100k.txt
+
+head -n 20000 wiki_zh_clean_v1.txt > wiki_zh_clean_20k.txt
+head -n 20000 wiki_vi_clean.txt > wiki_vi_clean_20k.txt
+head -n 20000 wiki_my_clean.txt > wiki_my_clean_20k.txt
+
+cat tr.txt \
+| sed 's/[[:space:]]\+/ /g' \
+| grep -v '^$' \
+| awk 'length($0) > 20' \
+> wiki_tr_clean.txt
+
+As an initial preprocessing step, whitespace was normalized, empty lines were removed, and lines shorter than 20 characters were discarded for all five languages (Myanmar, Vietnamese, Japanese, Chinese, Turkish), using a consistent Unicode-based character count to ensure comparable filtering across scripts.
