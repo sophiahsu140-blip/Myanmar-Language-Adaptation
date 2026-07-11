@@ -1,0 +1,22 @@
+{
+    "epoch": 5.0,
+    "eval_avg_acc": 0.07204746642246643,
+    "eval_context_avg_acc": 0.05982142857142857,
+    "eval_my-vi_alignment_loss": 0.0,
+    "eval_my-vi_context_avg": 0.05982142857142857,
+    "eval_my-vi_context_src2trg": 0.05525210084033613,
+    "eval_my-vi_context_trg2src": 0.064390756302521,
+    "eval_my-vi_loss": 0.0,
+    "eval_my-vi_noncontext_avg": 0.08427350427350427,
+    "eval_my-vi_noncontext_src2trg": 0.08717948717948718,
+    "eval_my-vi_noncontext_trg2src": 0.08136752136752137,
+    "eval_my-vi_regularization_loss": 0.0,
+    "eval_noncontext_avg_acc": 0.08427350427350427,
+    "eval_samples": 1024,
+    "test_samples": 1024,
+    "train_loss": 0.13521490478515624,
+    "train_runtime": 518.7072,
+    "train_samples": 18053,
+    "train_samples_per_second": 115.672,
+    "train_steps_per_second": 9.639
+}
