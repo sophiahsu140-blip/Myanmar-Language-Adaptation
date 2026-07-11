@@ -10,3 +10,7 @@
 /ccwrs/mono_data/step2.data_cleaning/opus/fa-my/OpenSubtitles.fa-my.my filter=lfs diff=lfs merge=lfs -text
 /ccwrs/mono_data/step2.data_cleaning/opus/my-tr/OpenSubtitles.my-tr.my filter=lfs diff=lfs merge=lfs -text
 /langrank_predict/langrank_data/subword-wiki.mya filter=lfs diff=lfs merge=lfs -text
+/1.langrank_predict/langrank_data/subword-wiki.mya filter=lfs diff=lfs merge=lfs -text
+/2.ccwrs/2.1.mono_data/step2.data_cleaning/opus/fa-my/OpenSubtitles.fa-my.fa filter=lfs diff=lfs merge=lfs -text
+/2.ccwrs/2.1.mono_data/step2.data_cleaning/opus/fa-my/OpenSubtitles.fa-my.my filter=lfs diff=lfs merge=lfs -text
+/2.ccwrs/2.1.mono_data/step2.data_cleaning/opus/my-tr/OpenSubtitles.my-tr.my filter=lfs diff=lfs merge=lfs -text
