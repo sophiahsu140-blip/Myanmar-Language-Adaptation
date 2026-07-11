@@ -1,6 +1,9 @@
 *.bin filter=lfs diff=lfs merge=lfs -text
 *.alignments filter=lfs diff=lfs merge=lfs -text
 *.tokens filter=lfs diff=lfs merge=lfs -text
+*.mya filter=lfs diff=lfs merge=lfs -text
+*.pt filter=lfs diff=lfs merge=lfs -text
+*.pth filter=lfs diff=lfs merge=lfs -text
 /mining_word_pairs/pairs/my-vi.tokens filter=lfs diff=lfs merge=lfs -text
 /mining_word_pairs/pairs/wiki_my_ja_pairs.txt filter=lfs diff=lfs merge=lfs -text
 /mining_word_pairs/pairs/wiki_my_vi_pairs_20k_intersection.alignments filter=lfs diff=lfs merge=lfs -text
