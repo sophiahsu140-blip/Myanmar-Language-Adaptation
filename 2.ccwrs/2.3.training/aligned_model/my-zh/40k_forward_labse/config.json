@@ -1,11 +1,12 @@
 {
-  "_name_or_path": "bert-base-multilingual-cased",
+  "_name_or_path": "/storage/slurm/home/65070701701@cpe.kmutt.ac.th/hf/hub/models--sentence-transformers--LaBSE/snapshots/836121a0533e5664b21c7aacc5d22951f2b8b25b",
   "architectures": [
     "BertForLinerLayearAlign"
   ],
   "attention_probs_dropout_prob": 0.1,
   "classifier_dropout": null,
   "directionality": "bidi",
+  "gradient_checkpointing": false,
   "hidden_act": "gelu",
   "hidden_dropout_prob": 0.1,
   "hidden_size": 768,
@@ -27,5 +28,5 @@
   "transformers_version": "4.20.0",
   "type_vocab_size": 2,
   "use_cache": true,
-  "vocab_size": 119547
+  "vocab_size": 501153
 }
