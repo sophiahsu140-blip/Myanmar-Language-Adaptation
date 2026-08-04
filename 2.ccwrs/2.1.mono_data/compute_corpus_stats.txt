@@ -7,3 +7,12 @@ Japanese          20000         44.4        7040
 Chinese           20000         42.7        9545
 Turkish           20000         28.4       11827
 Persian           20000         43.3        5701
+(ccwr) 65070701701@cpe.kmutt.ac.th@ctl01:~/contextual_cross_lingual_word_retrieval/lowresCCWR$ python data/mono/compute_corpus_stats.py 
+Language     #Sentences  Avg. Length  Vocab Size
+------------------------------------------------
+Burmese           40000         64.8        7962
+Vietnamese        40000         31.1       23549
+Japanese          24087         44.4        7428
+Chinese            8125         56.3        5578
+Turkish           40000         28.6       14761
+Persian           40000         43.2        7391

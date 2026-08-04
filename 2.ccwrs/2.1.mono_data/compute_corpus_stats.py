@@ -20,12 +20,12 @@ tokenizer = BertTokenizer.from_pretrained("bert-base-multilingual-cased")
 
 # Map: display name -> (language code used in your filenames, file path)
 LANG_FILES = {
-    "Burmese":    "data/mono/wiki_my_cleaned_20k.txt",
-    "Vietnamese": "data/mono/wiki_vi_cleaned_20k.txt",
-    "Japanese":   "data/mono/wiki_ja_cleaned_20k.txt",
-    "Chinese":    "data/mono/wiki_zh_cleaned_20k.txt",
-    "Turkish":    "data/mono/wiki_tr_cleaned_20k.txt",
-    "Persian":    "data/mono/wiki_fa_cleaned_20k.txt",
+    "Burmese":    "data/mono/wiki_my_cleaned_40k.txt",
+    "Vietnamese": "data/mono/wiki_vi_cleaned_40k.txt",
+    "Japanese":   "data/mono/wiki_ja_cleaned_40k.txt",
+    "Chinese":    "data/mono/wiki_zh_cleaned_40k.txt",
+    "Turkish":    "data/mono/wiki_tr_cleaned_40k.txt",
+    "Persian":    "data/mono/wiki_fa_cleaned_40k.txt",
 }
 
 print(f"{'Language':<12} {'#Sentences':>10} {'Avg. Length':>12} {'Vocab Size':>11}")
