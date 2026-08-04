@@ -1,0 +1,16 @@
+{
+    "eval_avg_acc": 0.7192529249053707,
+    "eval_context_avg_acc": 0.4725194552529183,
+    "eval_my-zh_alignment_loss": 0.0,
+    "eval_my-zh_context_avg": 0.4725194552529183,
+    "eval_my-zh_context_src2trg": 0.46352140077821014,
+    "eval_my-zh_context_trg2src": 0.48151750972762647,
+    "eval_my-zh_loss": 0.0,
+    "eval_my-zh_noncontext_avg": 0.9659863945578231,
+    "eval_my-zh_noncontext_src2trg": 0.9659863945578231,
+    "eval_my-zh_noncontext_trg2src": 0.9659863945578231,
+    "eval_my-zh_regularization_loss": 0.0,
+    "eval_noncontext_avg_acc": 0.9659863945578231,
+    "eval_samples": 1024,
+    "test_samples": 1024
+}
