@@ -1,0 +1,135 @@
+{
+  "best_metric": 0.028540304383864432,
+  "best_model_checkpoint": "output/aligned_model/my-fa/20k_intersection/checkpoint-5000",
+  "epoch": 5.1448,
+  "global_step": 5000,
+  "is_hyper_param_search": false,
+  "is_local_process_zero": true,
+  "is_world_process_zero": true,
+  "log_history": [
+    {
+      "epoch": 1.05,
+      "learning_rate": 5e-05,
+      "loss": 0.1876,
+      "step": 1000
+    },
+    {
+      "epoch": 1.05,
+      "eval_avg_acc": 0.027681682476822005,
+      "eval_context_avg_acc": 0.007549157303370787,
+      "eval_my-fa_alignment_loss": 0.0,
+      "eval_my-fa_context_avg": 0.007549157303370787,
+      "eval_my-fa_context_src2trg": 0.008075842696629214,
+      "eval_my-fa_context_trg2src": 0.007022471910112359,
+      "eval_my-fa_loss": 0.0,
+      "eval_my-fa_noncontext_avg": 0.04781420765027322,
+      "eval_my-fa_noncontext_src2trg": 0.04918032786885246,
+      "eval_my-fa_noncontext_trg2src": 0.04644808743169399,
+      "eval_my-fa_regularization_loss": 0.0,
+      "eval_noncontext_avg_acc": 0.04781420765027322,
+      "step": 1000
+    },
+    {
+      "epoch": 2.09,
+      "learning_rate": 3.7500000000000003e-05,
+      "loss": 0.128,
+      "step": 2000
+    },
+    {
+      "epoch": 2.09,
+      "eval_avg_acc": 0.03323394425001535,
+      "eval_context_avg_acc": 0.007724719101123595,
+      "eval_my-fa_alignment_loss": 0.0,
+      "eval_my-fa_context_avg": 0.007724719101123595,
+      "eval_my-fa_context_src2trg": 0.007373595505617977,
+      "eval_my-fa_context_trg2src": 0.008075842696629214,
+      "eval_my-fa_loss": 0.0,
+      "eval_my-fa_noncontext_avg": 0.0587431693989071,
+      "eval_my-fa_noncontext_src2trg": 0.060109289617486336,
+      "eval_my-fa_noncontext_trg2src": 0.05737704918032787,
+      "eval_my-fa_regularization_loss": 0.0,
+      "eval_noncontext_avg_acc": 0.0587431693989071,
+      "step": 2000
+    },
+    {
+      "epoch": 3.11,
+      "learning_rate": 2.5e-05,
+      "loss": 0.1035,
+      "step": 3000
+    },
+    {
+      "epoch": 3.11,
+      "eval_avg_acc": 0.030765046509486093,
+      "eval_context_avg_acc": 0.008251404494382022,
+      "eval_my-fa_alignment_loss": 0.0,
+      "eval_my-fa_context_avg": 0.008251404494382022,
+      "eval_my-fa_context_src2trg": 0.007022471910112359,
+      "eval_my-fa_context_trg2src": 0.009480337078651686,
+      "eval_my-fa_loss": 0.0,
+      "eval_my-fa_noncontext_avg": 0.05327868852459017,
+      "eval_my-fa_noncontext_src2trg": 0.0546448087431694,
+      "eval_my-fa_noncontext_trg2src": 0.05191256830601093,
+      "eval_my-fa_regularization_loss": 0.0,
+      "eval_noncontext_avg_acc": 0.05327868852459017,
+      "step": 3000
+    },
+    {
+      "epoch": 4.13,
+      "learning_rate": 1.25e-05,
+      "loss": 0.0908,
+      "step": 4000
+    },
+    {
+      "epoch": 4.13,
+      "eval_avg_acc": 0.028628085282740835,
+      "eval_context_avg_acc": 0.008075842696629214,
+      "eval_my-fa_alignment_loss": 0.0,
+      "eval_my-fa_context_avg": 0.008075842696629214,
+      "eval_my-fa_context_src2trg": 0.006671348314606741,
+      "eval_my-fa_context_trg2src": 0.009480337078651686,
+      "eval_my-fa_loss": 0.0,
+      "eval_my-fa_noncontext_avg": 0.04918032786885246,
+      "eval_my-fa_noncontext_src2trg": 0.04918032786885246,
+      "eval_my-fa_noncontext_trg2src": 0.04918032786885246,
+      "eval_my-fa_regularization_loss": 0.0,
+      "eval_noncontext_avg_acc": 0.04918032786885246,
+      "step": 4000
+    },
+    {
+      "epoch": 5.14,
+      "learning_rate": 0.0,
+      "loss": 0.0857,
+      "step": 5000
+    },
+    {
+      "epoch": 5.14,
+      "eval_avg_acc": 0.028540304383864432,
+      "eval_context_avg_acc": 0.007900280898876405,
+      "eval_my-fa_alignment_loss": 0.0,
+      "eval_my-fa_context_avg": 0.007900280898876405,
+      "eval_my-fa_context_src2trg": 0.006320224719101123,
+      "eval_my-fa_context_trg2src": 0.009480337078651686,
+      "eval_my-fa_loss": 0.0,
+      "eval_my-fa_noncontext_avg": 0.04918032786885246,
+      "eval_my-fa_noncontext_src2trg": 0.04918032786885246,
+      "eval_my-fa_noncontext_trg2src": 0.04918032786885246,
+      "eval_my-fa_regularization_loss": 0.0,
+      "eval_noncontext_avg_acc": 0.04918032786885246,
+      "step": 5000
+    },
+    {
+      "epoch": 5.14,
+      "step": 5000,
+      "total_flos": 0.0,
+      "train_loss": 0.11912458953857422,
+      "train_runtime": 974.8088,
+      "train_samples_per_second": 61.551,
+      "train_steps_per_second": 5.129
+    }
+  ],
+  "max_steps": 5000,
+  "num_train_epochs": 9223372036854775807,
+  "total_flos": 0.0,
+  "trial_name": null,
+  "trial_params": null
+}
