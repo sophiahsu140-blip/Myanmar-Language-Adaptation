@@ -1,0 +1,126 @@
+{
+  "best_metric": 0.6663493679409384,
+  "best_model_checkpoint": "output/aligned_model/my-zh/20k_forward_labse_seed2/checkpoint-5000",
+  "epoch": 13.0278,
+  "global_step": 5000,
+  "is_hyper_param_search": false,
+  "is_local_process_zero": true,
+  "is_world_process_zero": true,
+  "log_history": [
+    {
+      "epoch": 2.05,
+      "learning_rate": 5e-05,
+      "loss": 0.4056,
+      "step": 1000
+    },
+    {
+      "epoch": 2.05,
+      "eval_avg_acc": 0.721473174563731,
+      "eval_context_avg_acc": 0.47187196896217265,
+      "eval_my-zh_alignment_loss": 0.0,
+      "eval_my-zh_context_avg": 0.47187196896217265,
+      "eval_my-zh_context_src2trg": 0.465082444228904,
+      "eval_my-zh_context_trg2src": 0.4786614936954413,
+      "eval_my-zh_loss": 0.0,
+      "eval_my-zh_noncontext_avg": 0.9710743801652892,
+      "eval_my-zh_noncontext_src2trg": 0.9834710743801653,
+      "eval_my-zh_noncontext_trg2src": 0.9586776859504132,
+      "eval_my-zh_regularization_loss": 0.0,
+      "eval_noncontext_avg_acc": 0.9710743801652892,
+      "step": 1000
+    },
+    {
+      "epoch": 5.03,
+      "learning_rate": 3.7500000000000003e-05,
+      "loss": 0.2596,
+      "step": 2000
+    },
+    {
+      "epoch": 5.03,
+      "eval_avg_acc": 0.7053230034228183,
+      "eval_context_avg_acc": 0.46023278370514065,
+      "eval_my-zh_alignment_loss": 0.0,
+      "eval_my-zh_context_avg": 0.46023278370514065,
+      "eval_my-zh_context_src2trg": 0.46411251212415133,
+      "eval_my-zh_context_trg2src": 0.45635305528612996,
+      "eval_my-zh_loss": 0.0,
+      "eval_my-zh_noncontext_avg": 0.9504132231404959,
+      "eval_my-zh_noncontext_src2trg": 0.9504132231404959,
+      "eval_my-zh_noncontext_trg2src": 0.9504132231404959,
+      "eval_my-zh_regularization_loss": 0.0,
+      "eval_noncontext_avg_acc": 0.9504132231404959,
+      "step": 2000
+    },
+    {
+      "epoch": 8.0,
+      "learning_rate": 2.5e-05,
+      "loss": 0.1941,
+      "step": 3000
+    },
+    {
+      "epoch": 8.0,
+      "eval_avg_acc": 0.6774023855520197,
+      "eval_context_avg_acc": 0.43331716779825413,
+      "eval_my-zh_alignment_loss": 0.0,
+      "eval_my-zh_context_avg": 0.43331716779825413,
+      "eval_my-zh_context_src2trg": 0.4354995150339476,
+      "eval_my-zh_context_trg2src": 0.43113482056256064,
+      "eval_my-zh_loss": 0.0,
+      "eval_my-zh_noncontext_avg": 0.9214876033057852,
+      "eval_my-zh_noncontext_src2trg": 0.9256198347107438,
+      "eval_my-zh_noncontext_trg2src": 0.9173553719008265,
+      "eval_my-zh_regularization_loss": 0.0,
+      "eval_noncontext_avg_acc": 0.9214876033057852,
+      "step": 3000
+    },
+    {
+      "epoch": 10.05,
+      "learning_rate": 1.25e-05,
+      "loss": 0.1641,
+      "step": 4000
+    },
+    {
+      "epoch": 10.05,
+      "eval_avg_acc": 0.6710928168912473,
+      "eval_context_avg_acc": 0.4248302618816683,
+      "eval_my-zh_alignment_loss": 0.0,
+      "eval_my-zh_context_avg": 0.4248302618816683,
+      "eval_my-zh_context_src2trg": 0.41610087293889425,
+      "eval_my-zh_context_trg2src": 0.4335596508244423,
+      "eval_my-zh_loss": 0.0,
+      "eval_my-zh_noncontext_avg": 0.9173553719008265,
+      "eval_my-zh_noncontext_src2trg": 0.9256198347107438,
+      "eval_my-zh_noncontext_trg2src": 0.9090909090909091,
+      "eval_my-zh_regularization_loss": 0.0,
+      "eval_noncontext_avg_acc": 0.9173553719008265,
+      "step": 4000
+    },
+    {
+      "epoch": 13.03,
+      "learning_rate": 0.0,
+      "loss": 0.1525,
+      "step": 5000
+    },
+    {
+      "epoch": 13.03,
+      "eval_avg_acc": 0.6663493679409384,
+      "eval_context_avg_acc": 0.4277400581959263,
+      "eval_my-zh_alignment_loss": 0.0,
+      "eval_my-zh_context_avg": 0.4277400581959263,
+      "eval_my-zh_context_src2trg": 0.4165858389912706,
+      "eval_my-zh_context_trg2src": 0.43889427740058196,
+      "eval_my-zh_loss": 0.0,
+      "eval_my-zh_noncontext_avg": 0.9049586776859504,
+      "eval_my-zh_noncontext_src2trg": 0.9090909090909091,
+      "eval_my-zh_noncontext_trg2src": 0.9008264462809917,
+      "eval_my-zh_regularization_loss": 0.0,
+      "eval_noncontext_avg_acc": 0.9049586776859504,
+      "step": 5000
+    }
+  ],
+  "max_steps": 5000,
+  "num_train_epochs": 9223372036854775807,
+  "total_flos": 0.0,
+  "trial_name": null,
+  "trial_params": null
+}
