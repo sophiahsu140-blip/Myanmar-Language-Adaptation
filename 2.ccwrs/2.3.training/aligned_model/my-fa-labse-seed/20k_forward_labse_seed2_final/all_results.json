@@ -1,0 +1,22 @@
+{
+    "epoch": 8.08,
+    "eval_avg_acc": 0.2858037220398088,
+    "eval_context_avg_acc": 0.19761822575077664,
+    "eval_my-fa_alignment_loss": 0.0,
+    "eval_my-fa_context_avg": 0.19761822575077664,
+    "eval_my-fa_context_src2trg": 0.20158784949948222,
+    "eval_my-fa_context_trg2src": 0.1936486020020711,
+    "eval_my-fa_loss": 0.0,
+    "eval_my-fa_noncontext_avg": 0.37398921832884097,
+    "eval_my-fa_noncontext_src2trg": 0.3719676549865229,
+    "eval_my-fa_noncontext_trg2src": 0.37601078167115903,
+    "eval_my-fa_regularization_loss": 0.0,
+    "eval_noncontext_avg_acc": 0.37398921832884097,
+    "eval_samples": 1024,
+    "test_samples": 1024,
+    "train_loss": 0.38201602783203126,
+    "train_runtime": 763.1132,
+    "train_samples": 18058,
+    "train_samples_per_second": 78.625,
+    "train_steps_per_second": 6.552
+}
