@@ -11,7 +11,7 @@
 \usepackage{amssymb}
 \usepackage{stfloats}
 \usepackage{tikz}
-\usetikzlibrary{shapes.geometric,arrows.meta,positioning,fit,backgrounds}
+\usetikzlibrary{shapes.geometric,arrows.meta,calc,positioning,fit,backgrounds}
 
 % ---------------------------------------------------------------
 % UNICODE FONTS -- requires the XeLaTeX compiler.
@@ -60,8 +60,9 @@
 %         Author 2 \\ Address line \\ ... \\ Address line \And
 %         Author 3 \\ Address line \\ ... \\ Address line}
 
-% Camera-ready: three authors, one shared affiliation to prevent overlap.
+% Camera-ready: three authors with one shared affiliation.
 \author{Hsu Nyeint Thu \quad Aye Hninn Khine \quad Santitham Prom-on\\
+Department of Computer Engineering\\
 King Mongkut's University of Technology Thonburi, Thailand\\
 \texttt{hsunyeint.thu1@kmutt.ac.th}\\
 \texttt{aye.hnin@kmutt.ac.th}\\
@@ -112,7 +113,7 @@ Low-resource languages face significant challenges in natural language processin
 
 We first rank candidate transfer languages for Burmese using LangRank, a LightGBM-based ranking model combining dataset, lexical, and linguistic similarity features, supplemented with typologically motivated choices. Contextual bilingual word pairs are then mined automatically from monolingual corpora through nearest-neighbour search over frozen encoder representations. A lightweight linear transformation is trained on these pairs to align Burmese representations with each transfer language while leaving the encoder unchanged.
 
-We evaluate cross-lingual word retrieval across five Burmese–X pairs: Vietnamese, Persian, Turkish, Japanese, and Chinese, using mBERT and LaBSE as frozen backbones. With mBERT, alignment improves retrieval accuracy over the frozen baseline for all five pairs, with relative gains of 16\%–124\%. Multi-seed experiments confirm statistically significant improvements ($p<0.05$) across all pairs. In contrast, alignment degrades LaBSE retrieval across all five pairs and three examined seeds per pair, while frozen LaBSE achieves the strongest overall performance. These contrasting results show that the effectiveness of contextual alignment is backbone-dependent: it can substantially improve weaker multilingual representations such as mBERT, but may disrupt already well-aligned representations such as LaBSE.
+We evaluate cross-lingual word retrieval across five Burmese–X pairs: Vietnamese, Persian, Turkish, Japanese, and Chinese, using mBERT and LaBSE as frozen backbones. With mBERT, alignment improves retrieval accuracy over the frozen baseline for all five pairs, with relative gains of 16\%–124\%. Exploratory three-seed tests indicate improvements across all five pairs (unadjusted $p<0.05$). In contrast, alignment degrades LaBSE retrieval across all five pairs and three examined seeds per pair, while frozen LaBSE achieves the strongest overall performance. These contrasting results show that the effectiveness of contextual alignment is backbone-dependent: it can substantially improve weaker multilingual representations such as mBERT, but may disrupt already well-aligned representations such as LaBSE.
 \end{abstract}
 
 \section{Introduction}
@@ -133,7 +134,7 @@ improves retrieval over the original frozen representations, how performance
 varies with the choice of transfer language and the amount of monolingual
 training data, and whether the effect of alignment differs between mBERT and
 LaBSE.
-The main contributions of this paper are threefold. First, we present a systematic empirical study of contextual cross-lingual embedding alignment for Burmese, a low-resource language that has received limited attention in multilingual representation learning. Second, we evaluate LangRank-based transfer-language selection for Burmese and combine it with typologically motivated additions, comparing five candidate transfer languages with different linguistic characteristics. Third, we examine how transfer-language choice, monolingual corpus size, and encoder backbone
+The main contributions of this paper are as follows: First, we present a systematic empirical study of contextual cross-lingual embedding alignment for Burmese, a low-resource language that has received limited attention in multilingual representation learning. Second, we evaluate LangRank-based transfer-language selection for Burmese and combine it with typologically motivated additions, comparing five candidate transfer languages with different linguistic characteristics. Third, we examine how transfer-language choice, monolingual corpus size, and encoder backbone
 affect the effectiveness of contextual embedding alignment.
 
 \section{Related Work}
@@ -144,80 +145,305 @@ Aligning word or contextual embeddings across languages into a shared space to s
 \subsection{Transfer Language Ranking} 
 LangRank \citep{lin-etal-2019-choosing}, used in Stage~1 of this study, formulates transfer-language selection as learning-to-rank over dataset, lexical, and linguistic-distance features. A complementary line of work studies \emph{why} multilingual models such as mBERT transfer across languages at all, finding transfer strongest between typologically similar languages \citep{pires-etal-2019-multilingual,karthikeyan-etal-2020-cross}, which motivates our use of typological evidence to add Chinese and Japanese as transfer languages (Section~\ref{sec:transfer_selection}) beyond LangRank's own output. \citet{ruder-etal-2019-survey} survey this broader space; Burmese has not been a particular focus of it.
 
-\subsection{Burmese NLP} 
+\subsection{Burmese Language Resources and Cross-Lingual Transfer}
 NLP resources for Burmese remain scarce, with existing work concentrated on word/syllable segmentation \citep{ding-etal-2016-word} and corpus construction, notably the Asian Language Treebank \citep{thu-etal-2016-introducing}, which we also use for evaluation (Section~\ref{sec:datasets}). \citet{mao-etal-2022-burmese} adapt an English-pretrained sentiment classifier to Burmese via full task fine-tuning, rather than representation alignment. General-purpose multilingual encoders continue to scale \citep{devlin-etal-2019-bert,conneau-etal-2020-unsupervised,artetxe-schwenk-2019-massively}, but their cross-lingual transfer quality remains highly uneven across languages, correlating with pre-training data volume \citep{wu-dredze-2019-beto,wu-dredze-2020-languages} -- precisely the gap this paper investigates for Burmese, where cross-lingual \emph{representation alignment} specifically, as opposed to segmentation, corpus construction, or task fine-tuning, has received little attention.
 
 \section{Methodology}
 
 \subsection{Framework Overview}
 
-This study investigates multilingual contextual embedding alignment for improving cross-lingual word representations of Burmese, a low-resource language. Rather than fine-tuning or continuing to pre-train the underlying multilingual encoder, the selected framework keeps the encoder frozen throughout and instead learns a lightweight, per-language-pair transformation on top of it. The framework consists of two stages. Stage 1 selects transfer languages for Burmese using LangRank. Stage 2, built around the CCWR (Contextualized Cross-lingual Word Representation) procedure, covers everything from monolingual and parallel corpus preparation, through contextual bilingual word-pair mining, to embedding alignment and word-retrieval evaluation. Figure~\ref{fig:architecture} illustrates how these two stages connect; Section~\ref{sec:transfer_selection} details Stage 1 and Sections~\ref{sec:data_prep}--\ref{sec:alignment} detail Stage 2.
+This study investigates multilingual contextual embedding alignment for improving cross-lingual word representations of Burmese, a low-resource language. Rather than fine-tuning or continuing to pre-train the underlying multilingual encoder, the framework keeps the encoder frozen throughout and instead learns a lightweight, per-language-pair transformation on top of it. The framework consists of two stages. Stage 1 selects transfer languages for Burmese using LangRank. Stage 2 follows CCWR, using monolingual corpora for contextual word-pair mining and alignment training, while reserving parallel corpora for retrieval evaluation. Figure~\ref{fig:architecture} illustrates how these two stages connect; Section~\ref{sec:transfer_selection} details Stage 1 and Sections~\ref{sec:data_prep}--\ref{sec:alignment} detail Stage 2.
+
 
 \begin{figure*}[t]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
   font=\small,
-  box/.style={draw, rounded corners, align=center, minimum height=0.9cm, inner sep=4pt, fill=gray!7},
-  innerbox/.style={draw, rounded corners, align=center, minimum height=0.8cm, inner sep=3pt, fill=orange!12},
-  stage/.style={draw, dashed, rounded corners, inner sep=8pt},
-  loopbox/.style={draw, rounded corners, inner sep=6pt, fill=orange!5},
-  arrow/.style={-{Latex[length=2mm]}, thick},
-  looparrow/.style={-{Latex[length=1.8mm]}, thick, bend left=25}
+  box/.style={
+    draw,
+    rounded corners,
+    align=center,
+    minimum height=0.9cm,
+    inner sep=4pt,
+    fill=gray!7
+  },
+  innerbox/.style={
+    draw,
+    rounded corners,
+    align=center,
+    minimum height=0.8cm,
+    inner sep=3pt,
+    fill=orange!12
+  },
+  stage/.style={
+    draw,
+    dashed,
+    rounded corners=4pt,
+    line width=0.5pt
+  },
+  loopbox/.style={
+    draw,
+    rounded corners,
+    inner sep=7pt,
+    fill=orange!5
+  },
+  arrow/.style={
+    -{Latex[length=2mm]},
+    thick
+  },
+  looparrow/.style={
+    -{Latex[length=1.8mm]},
+    thick,
+    bend left=25
+  }
 ]
 
-% ---- Stage 1: transfer language selection ----
-\node[box, minimum width=2.6cm] (mono) {Burmese\\monolingual corpus};
-\node[box, right=0.6cm of mono, minimum width=2.6cm] (spm) {SentencePiece\\subword segmentation};
-\node[box, right=0.6cm of spm, minimum width=2.6cm] (langrank) {LangRank\\(LightGBM ranker)};
-\node[box, right=0.6cm of langrank, minimum width=3.0cm] (ranked) {Ranked candidates\\+ URIEL typology};
+% =====================================================
+% Stage 1: Transfer-Language Selection
+% =====================================================
 
+\node[
+  box,
+  minimum width=2.6cm
+] (mono)
+  {Burmese\\monolingual corpus};
+
+\node[
+  box,
+  right=0.6cm of mono,
+  minimum width=2.6cm
+] (spm)
+  {SentencePiece\\subword segmentation};
+
+\node[
+  box,
+  right=0.6cm of spm,
+  minimum width=2.6cm
+] (langrank)
+  {LangRank\\(pretrained LightGBM ranker)};
+
+\node[
+  box,
+  right=0.6cm of langrank,
+  minimum width=3.0cm
+] (ranked)
+  {Ranked candidates\\+ URIEL typology};
+
+% Stage 1 arrows
 \draw[arrow] (mono) -- (spm);
 \draw[arrow] (spm) -- (langrank);
 \draw[arrow] (langrank) -- (ranked);
 
-\node[stage, fit=(mono)(spm)(langrank)(ranked), label={[font=\small\bfseries]above:Stage 1: Transfer-Language Selection}] (stage1) {};
+% Stage 1 boundary corners
+\coordinate (s1nw) at
+  ([xshift=-0.30cm,yshift=0.35cm]mono.north west);
 
-% ---- Stage 2: CCWR training ----
-\node[box, below=1.6cm of mono, xshift=0.2cm, minimum width=2.6cm] (mono2) {Monolingual + parallel corpora\\(Burmese + transfer lang.)};
-\node[box, right=0.6cm of mono2, minimum width=2.4cm] (mbert) {Frozen encoder\\(mBERT / LaBSE)};
+\coordinate (s1se) at
+  ([xshift=0.30cm,yshift=-0.35cm]ranked.south east);
 
-\node[innerbox, right=0.9cm of mbert, minimum width=2.3cm, yshift=0.55cm] (mine) {Mine word pairs\\(cosine NN, $\tau$)};
-\node[innerbox, below=0.35cm of mine, minimum width=2.3cm] (train) {Update alignment\\layer $W$ (MSE)};
+% Draw Stage 1 boundary
+\draw[stage] (s1nw) rectangle (s1se);
+
+% Stage 1 title
+\coordinate (s1titlepos) at
+  ($(s1nw)!0.5!(s1nw -| s1se)$);
+
+\node[
+  font=\small\bfseries,
+  anchor=south
+] at ([yshift=0.12cm]s1titlepos)
+  {Stage 1: Transfer-Language Selection};
+
+
+% =====================================================
+% Stage 2: CCWR Training and Evaluation
+% =====================================================
+
+% Stage 2 starts sufficiently below Stage 1.
+% The left edge is aligned with the Stage 1 content.
+\node[
+  box,
+  anchor=north west,
+  at={([xshift=0.30cm,yshift=-2.3cm]s1nw |- s1se)},
+  minimum width=2.6cm
+] (mono2)
+  {Monolingual corpora\\(Burmese + transfer lang.)};
+
+% Frozen encoder
+\node[
+  box,
+  right=0.6cm of mono2,
+  minimum width=2.4cm
+] (mbert)
+  {Frozen encoder\\(mBERT / LaBSE)};
+
+% Word-pair mining
+\node[
+  innerbox,
+  right=0.9cm of mbert,
+  minimum width=2.3cm,
+  yshift=0.55cm
+] (mine)
+  {Mine word pairs\\(cosine NN, $\tau$)};
+
+% Alignment layer training
+\node[
+  innerbox,
+  below=0.35cm of mine,
+  minimum width=2.3cm
+] (train)
+  {Update alignment\\layer $W$ (MSE)};
+
+% Training-loop background
 \begin{pgfonlayer}{background}
-\node[loopbox, fit=(mine)(train), inner sep=7pt, label={[font=\scriptsize\itshape, text=black, fill=none]above:single training loop}] (loop) {};
+\node[
+  loopbox,
+  fit=(mine)(train),
+  label={
+    [font=\scriptsize\itshape,
+     text=black,
+     fill=none]
+    above:single training loop
+  }
+] (loop) {};
 \end{pgfonlayer}
-\node[inner sep=0pt, minimum height=0pt] (spacer) at ([yshift=0.5cm]loop.north) {};
 
-\node[box, right=0.9cm of loop, minimum width=2.4cm] (eval) {Cross-lingual word\\retrieval (P@1)};
+% Retrieval evaluation
+\node[
+  box,
+  right=0.9cm of loop,
+  minimum width=2.4cm
+] (eval)
+  {Cross-lingual word\\retrieval (P@1)};
 
+% Evaluation-only parallel corpora
+\node[
+  box,
+  below=0.45cm of eval,
+  minimum width=2.4cm,
+  font=\scriptsize,
+  fill=blue!6
+] (parallel)
+  {Parallel corpora\\(evaluation only)};
+
+% Stage 2 workflow arrows
 \draw[arrow] (mono2) -- (mbert);
 \draw[arrow] (mbert) -- (loop);
-\draw[looparrow] (mine.east) to (train.east);
-\draw[looparrow] (train.west) to (mine.west);
+
+% Interleaved training loop
+\draw[looparrow]
+  (mine.east) to (train.east);
+
+\draw[looparrow]
+  (train.west) to (mine.west);
+
+% Retrieval
 \draw[arrow] (loop) -- (eval);
 
-\node[stage, fit=(mono2)(mbert)(loop)(eval)(spacer), label={[font=\small\bfseries]below:Stage 2: CCWR Training \& Evaluation }] (stage2) {};
+% Parallel corpora used only for evaluation
+\draw[arrow, dashed]
+  (parallel.north) -- (eval.south);
 
-\draw[arrow, dashed] (ranked.south) -- ++(0,-0.35) -| (mono2.north);
 
-\node[box, below=0.6cm of stage2.south, text width=12.5cm, align=center, minimum height=0.7cm, fill=blue!6, font=\scriptsize] (sweep)
-  {Stage 2 is repeated across:
-backbone $\in$ \{mBERT, LaBSE\}
-$\times$ available corpus-size configurations
-$\times$ language pair $\in$ \{my--vi, my--ja, my--zh, my--fa, my--tr\}};
+% =====================================================
+% Stage 2 Boundary
+% Exactly aligned with Stage 1 horizontally
+% =====================================================
 
+% Top and bottom positions
+\coordinate (s2top) at
+  ([yshift=0.65cm]loop.north);
+
+\coordinate (s2bottom) at
+  ([yshift=-0.30cm]parallel.south);
+
+% Match Stage 1 left and right edges
+\coordinate (s2nw) at
+  (s1nw |- s2top);
+
+\coordinate (s2se) at
+  (s1se |- s2bottom);
+
+% Draw Stage 2 boundary
+\draw[stage] (s2nw) rectangle (s2se);
+
+% Stage 2 title, centered below boundary
+\coordinate (s2titlepos) at
+  ($(s2se)!0.5!(s2se -| s2nw)$);
+
+\node[
+  font=\small\bfseries,
+  anchor=north
+] (stage2title)
+  at ([yshift=-0.12cm]s2titlepos)
+  {Stage 2: CCWR Training \& Evaluation};
+
+
+% =====================================================
+% Connector: Stage 1 -> Stage 2
+% =====================================================
+
+% Calculate midpoint between the actual dashed borders.
+% The horizontal segment lies entirely in the gap.
+\coordinate (connectorlevel) at
+  ($(s1se)!0.5!(s2nw)$);
+
+% Explicit vertical-horizontal-vertical routing
+\draw[arrow, dashed]
+  (ranked.south)
+  -- (ranked.south |- connectorlevel)
+  -- (mono2.north |- connectorlevel)
+  -- (mono2.north);
+
+
+% =====================================================
+% Experimental Configurations
+% =====================================================
+
+\node[
+  box,
+  below=0.30cm of stage2title.south,
+  anchor=north,
+  text width=12.5cm,
+  align=center,
+  minimum height=0.7cm,
+  fill=blue!6,
+  font=\scriptsize
+] (sweep)
+{
+  Stage 2 is repeated across:
+  backbone $\in$ \{mBERT, LaBSE\}
+  $\times$ available corpus-size configurations
+  $\times$ language pair $\in$
+  \{my--vi, my--ja, my--zh, my--fa, my--tr\}
+};
 
 \end{tikzpicture}%
 }
-\caption{Overview of the experimental framework (Stage 1 selects transfer languages for Burmese using LangRank features together with typological evidence from URIEL. Stage 2 prepares corpora, then runs a single training loop in which word-pair mining and linear alignment-layer training are interleaved at every step, not run as separate preprocessing and training stages, before evaluating via cross-lingual word retrieval. As summarized at the bottom, Stage 2 is run across the available combinations of backbone (mBERT or LaBSE), monolingual corpus size (20k or 40k sentences), and Burmese--transfer-language pair, giving the full set of results reported in Section~\ref{sec:results}.}
+
+\caption{Overview of the experimental framework.
+Stage 1 selects transfer languages using
+LangRank \citep{lin-etal-2019-choosing}
+and URIEL typological evidence.
+Stage 2 mines contextual bilingual word pairs
+from monolingual corpora and trains a linear
+alignment layer in an interleaved loop with
+a frozen encoder. Parallel corpora are used
+only for retrieval evaluation. Experiments
+cover two backbones, five language pairs,
+and available 20k and 40k corpus
+configurations.}
+
 \label{fig:architecture}
 \end{figure*}
+
+
 
 \subsection{Transfer Language Selection}
 \label{sec:transfer_selection}
 
-Rather than choosing transfer languages by intuition, we first rank candidate languages using LangRank \citep{lin-etal-2019-choosing}, which predicts the usefulness of a source language for cross-lingual transfer from dataset, lexical, and linguistic-distance features (drawn from URIEL, a multilingual
+Rather than choosing transfer languages by intuition, we first rank candidate languages using LangRank \citep{lin-etal-2019-choosing} with its pretrained LightGBM ranking model \citep{ke2017lightgbm}. The model predicts the usefulness of a source language for cross-lingual transfer from dataset, lexical, and linguistic-distance features (drawn from URIEL, a multilingual
 typological database). Two SentencePiece models were trained on Burmese text at different scales, a small BPE model on a 20{,}106-sentence corpus and a larger model on a cleaned Wikipedia dump of 774{,}506 sentences, and LangRank was run against each. The smaller corpus ranked Persian, Turkish, and Hungarian above Vietnamese; the larger, cleaner corpus shifted the ranking, promoting Vietnamese to first place, indicating LangRank's dataset features are themselves sensitive to corpus size and cleaning quality for an under-resourced language like Burmese. Discarding a self-match artefact, the two runs together support Vietnamese, Persian, and Turkish as the empirically preferred transfer languages, with Bulgarian appearing in the ranking but not carried forward, as it is typologically distant (Slavic, Indo-European) from Sino-Tibetan Burmese.
 
 Because LangRank's dataset-driven features favour large, easily obtained corpora and can underweight typological fit, we complement the ranking with two additional languages, Chinese and Japanese, chosen on typological and regional grounds. In the URIEL single-feature rankings, Chinese
@@ -227,7 +453,7 @@ appears among the closest under syntactic and featural distance. The final set o
 \subsection{Multilingual Data Preparation}
 \label{sec:data_prep}
 
-Monolingual corpora for Burmese and each transfer language are collected from Wikipedia and cleaned with language-specific filters. Twenty thousand cleaned sentences per language are sampled for the main experiments (Appendix~\ref{app:corpus_stats}); a larger, 40,000-sentence configuration is additionally prepared to examine corpus-size effects (Appendix~\ref{app:ablations}), although Japanese and Chinese do not reach the 40k target. Full corpus statistics are provided in Appendix~\ref{app:corpus_stats}. Parallel data is used only for evaluation: Burmese--Vietnamese, Burmese--Japanese, and Burmese--Chinese pairs are from the Asian Language Treebank \citep[ALT;][]{thu-etal-2016-introducing}; Burmese--Turkish and Burmese--Persian, for which ALT has no coverage, are taken from the direct bitexts released in OPUS OpenSubtitles v2024 \citep{lison-tiedemann-2016-opensubtitles}. All evaluation datasets are subsampled to 20,106 sentence pairs to control evaluation-set size, not retrieval-candidate-pool size. Paired sentences are stored as whitespace-tokenized \texttt{.tokens} files, and SimAlign \citep{jalili-sabet-etal-2020-simalign} with BPE and IterMax produces automatic word-index references in \texttt{.alignments} files. The evaluation loader retains one-to-one alignments. These are silver references, not manually verified translations. The parallel data and their references are used for validation and testing, not to supervise the alignment layer, which trains on pairs mined from separate monolingual Wikipedia corpora.
+Monolingual corpora for Burmese and each transfer language are collected from Wikipedia and cleaned with language-specific filters. Twenty thousand cleaned sentences per language are sampled for the main experiments (Appendix~\ref{app:corpus_stats}); a larger, 40,000-sentence configuration is additionally prepared to examine corpus-size effects (Appendix~\ref{app:ablations}), although Japanese and Chinese do not reach the 40k target. Full corpus statistics are provided in Appendix~\ref{app:corpus_stats}. Parallel data are used only for evaluation: Burmese--Vietnamese, Burmese--Japanese, and Burmese--Chinese pairs are from the Asian Language Treebank \citep[ALT;][]{thu-etal-2016-introducing}; Burmese--Turkish and Burmese--Persian, for which ALT has no coverage, are taken from the direct bitexts released in OPUS OpenSubtitles v2024 \citep{lison-tiedemann-2016-opensubtitles}. All evaluation datasets are subsampled to 20,106 sentence pairs to control evaluation-set size, not retrieval-candidate-pool size. Paired sentences are stored as whitespace-tokenized \texttt{.tokens} files, and SimAlign \citep{jalili-sabet-etal-2020-simalign} with BPE and IterMax produces automatic word-index references in \texttt{.alignments} files. The evaluation loader retains one-to-one alignments. These are silver references, not manually verified translations. The parallel data and their references are used for validation and testing, not to supervise the alignment layer, which trains on pairs mined from separate monolingual Wikipedia corpora.
 
 \subsection{Contextual Bilingual Word-Pair Mining}
 \label{sec:mining}
@@ -239,7 +465,7 @@ Given monolingual corpora in Burmese and a transfer language, contextual word re
 \label{eq:cosine}
 \end{equation}
 
-retaining a pair $(\mathbf{x}, \mathbf{y})$ only if similarity exceeds a fixed threshold $\tau = 0.2$ (and falls below an upper bound of 100, which excludes near-duplicate pairs). This is not a one-off preprocessing pass: mining and alignment-layer training are interleaved within a single loop, with fresh batches re-mined at regular intervals using the alignment layer's current state. This requires no bilingual dictionary and no parallel corpus, making the approach applicable where both are scarce.
+retaining a pair $(\mathbf{x}, \mathbf{y})$ only if similarity exceeds a fixed threshold $\tau = 0.2$. This is not a one-off preprocessing pass: mining and alignment-layer training are interleaved within a single loop, with fresh batches re-mined at regular intervals using the alignment layer's current state. This requires no bilingual dictionary and no parallel corpus, making the approach applicable where both are scarce.
 
 \subsection{Cross-lingual Embedding Alignment}
 \label{sec:alignment}
@@ -293,14 +519,21 @@ The alignment layer was trained independently for each language pair using AdamW
 \subsection{Baseline Models}
 \label{sec:baselines}
 
-The multilingual encoder is \texttt{bert-base-multilingual-cased}, used only in inference mode; its weights are never updated. Since the goal is to isolate the effect of alignment itself, we compare against a direct, frozen baseline: the encoder used for retrieval \emph{without} an alignment layer ($\mathbf{W} = \mathbf{I}$), evaluated on the same test splits, so any accuracy difference is attributable to the learned alignment.
+We use mBERT \citep{devlin-etal-2019-bert}
+as a frozen encoder. To isolate the effect of
+alignment, we compare against the frozen baseline,
+which performs retrieval without a learned
+alignment transformation ($\mathbf{W} = \mathbf{I}$).
+Both configurations are evaluated on the same
+test splits, so performance differences reflect
+the effect of the learned alignment.
 
 To examine whether the effect of CCWR depends on the underlying
 pretrained encoder, we repeat the 20k configurations with
 \texttt{sentence-transformers/LaBSE} \citep{feng-etal-2022-language}
 as an alternative frozen backbone for all five pairs, and the available
 40k configurations for the three pairs that reach the 40k target,
-keeping every other hyperparameter identical. LaBSE shares mBERT's BERT-style Transformer architecture but is pretrained with a multilingual bitext-retrieval objective across 109 languages rather than monolingual masked-language-modelling objective. Both frozen and CCWR-aligned LaBSE are reported alongside mBERT in Section~\ref{sec:backbone_comparison}.
+keeping every other hyperparameter identical. LaBSE shares mBERT's BERT-style Transformer architecture but is pretrained with a multilingual bitext-retrieval objective across 109 languages rather than a masked-language-modelling objective. Both frozen and CCWR-aligned LaBSE are reported alongside mBERT in Section~\ref{sec:backbone_comparison}.
 
 \subsection{Retrieval Evaluation}
 \label{sec:eval_metrics}
@@ -416,10 +649,67 @@ my--tr & 39.50 & 30.17 & $-$9.33 \\
 \end{tabular}
 \end{table}
 
-The result is consistent across all five evaluated language pairs: CCWR alignment improves overall retrieval accuracy for every one of the five pairs under mBERT, and \emph{degrades} it for every one of the five pairs under LaBSE. The direction flips completely with the backbone, and the magnitude for mBERT (+0.40 to +4.15 points) is consistently far smaller than for LaBSE ($-$1.97 to $-$9.33 points). Frozen LaBSE alone, with no alignment training, is the best-performing configuration in this study for every pair -- a gap that is present, and larger, before any alignment happens, and that alignment training subsequently narrows by pulling LaBSE's representations \emph{away} from their pre-trained state. The pattern of performance changes across language pairs suggests that the quality of the mined supervision may be an important factor in determining the effect of alignment. If alignment harmed LaBSE primarily because its original representations were already strong, pairs with higher frozen accuracy would be expected to experience larger degradation. Instead, Burmese--Persian and Burmese--Turkish have the lowest frozen LaBSE accuracies (36.15 and 39.50) but show the largest relative decreases after alignment ($-21.5\%$ and $-23.6\%$), whereas Burmese--Vietnamese and Burmese--Japanese show much smaller decreases ($-4.3\%$ and $-4.7\%$). The pattern is also associated with the data source: the three ALT-derived pairs decrease by an average of 6.0\%, compared with 22.5\% for the two OpenSubtitles-derived pairs. A similar pattern is observed for mBERT, which gains 41--124\% on the ALT pairs but only 16--26\% on the OpenSubtitles pairs. These differences may reflect language-pair characteristics, tokenization, and evaluation-domain effects. Although noise in automatically mined training pairs is a plausible contributor to LaBSE's degradation, the present experiments do not isolate supervision quality as its cause. This interpretation is consistent with the CCWR training procedure. The alignment layer minimizes mean squared error using automatically mined word pairs selected at a similarity threshold of $\tau=0.2$, without a curated dictionary or negative sampling. Consequently, noisy pairs can directly pull representations toward incorrect counterparts. For mBERT, whose cross-lingual representations are relatively weak, even imperfect supervision may provide a net benefit. In contrast, LaBSE starts with stronger lexical representations, making it more sensitive to noisy alignment targets. This interpretation is also consistent with \citet{vulic-etal-2023-probing}, who improved LaBSE word-level retrieval by 9.4 P@1 using a contrastive objective trained on gold translation pairs. Thus, our results suggest that LaBSE can benefit from lexical alignment when cleaner supervision is available, and that the degradation observed here may reflect limitations of automatically mined supervision, although the contributions of supervision noise, backbone characteristics, and shared hyperparameters remain unresolved. However, given the small number of language pairs and the confounding between data source and language pair, this explanation should be regarded as a plausible interpretation rather than a demonstrated causal effect. These results suggest that CCWR may be unnecessary or detrimental for
-a backbone whose pre-training already explicitly targets cross-lingual
-alignment, whereas it remains beneficial for mBERT under the evaluated
-setting.
+The result is consistent across all five language pairs:
+CCWR alignment improves overall retrieval accuracy
+under mBERT but \emph{degrades} it under LaBSE.
+The effect reverses with the backbone, with smaller
+gains for mBERT (+0.40 to +4.15 points) than losses
+for LaBSE ($-$1.97 to $-$9.33 points). Frozen LaBSE achieves the highest accuracy
+for every pair, while the learned alignment
+transformation consistently reduces its
+retrieval performance.
+
+The variation across language pairs suggests that
+mined supervision quality may influence alignment
+effectiveness. If LaBSE degradation resulted
+primarily from its already strong representations,
+pairs with higher frozen accuracy might be expected
+to degrade more. Instead, Burmese--Persian and
+Burmese--Turkish have the lowest frozen LaBSE
+accuracies (36.15 and 39.50) but the largest
+relative decreases ($-21.5\%$ and $-23.6\%$),
+whereas Burmese--Vietnamese and Burmese--Japanese
+decrease by only $-4.3\%$ and $-4.7\%$.
+The pattern also varies by data source:
+the three ALT-derived pairs decrease by an average
+of 6.0\%, compared with 22.5\% for the two
+OpenSubtitles-derived pairs. Similarly, mBERT gains
+41--124\% on ALT pairs but only 16--26\% on
+OpenSubtitles pairs. These differences may reflect
+language-pair characteristics, tokenization, and
+evaluation-domain effects rather than supervision
+quality alone.
+
+Noise in automatically mined training pairs is
+a plausible contributor to LaBSE's degradation.
+The CCWR alignment layer minimizes mean squared
+error over word pairs mined at a similarity threshold
+of $\tau=0.2$, without a curated dictionary or
+negative sampling. Noisy pairs may therefore pull
+representations toward incorrect counterparts.
+For mBERT, whose cross-lingual representations
+are relatively weak, imperfect supervision may
+still provide a net benefit. In contrast, LaBSE's
+stronger lexical representations may be more
+sensitive to noisy alignment targets.
+Consistent with this possibility,
+\citet{vulic-etal-2023-probing} improved LaBSE
+word-level retrieval by 9.4 P@1 using a contrastive
+objective trained on gold translation pairs,
+suggesting that cleaner supervision can support
+lexical alignment.
+
+Nevertheless, the present experiments cannot
+isolate the contributions of supervision noise,
+backbone characteristics, or shared hyperparameters.
+Given the small number of language pairs and the
+confounding between language pair and evaluation
+domain, these explanations remain plausible rather
+than demonstrated causal effects. Under the
+evaluated setting, CCWR appears beneficial for
+mBERT but potentially unnecessary or detrimental
+for a backbone already pretrained for
+cross-lingual alignment.
 
 \subsection{Diagnostic \& Robustness Analyses}
 \label{sec:error_analysis}
@@ -461,17 +751,47 @@ achieves the highest raw overall P@1, Vietnamese achieves the strongest contextu
 mBERT but degrades LaBSE under the evaluated setting, highlighting the
 importance of the pretrained backbone when applying contextual alignment. These findings highlight the importance of selecting both an appropriate transfer language and a suitable pretrained backbone.
 
-\section{Limitations}
-\label{sec:limitations}
-
-This study evaluates alignment quality solely through word-level retrieval, not downstream tasks. The encoder is kept frozen throughout. Burmese--Turkish and Burmese--Persian evaluation data come from OpenSubtitles rather than ALT, so language-pair and evaluation-domain differences may partly explain their smaller gains. The main frozen-versus-aligned table presents the original seed-42 runs; additional seeds (1 and 2) were evaluated for both mBERT and LaBSE. The additional seeds assess run-to-run variability. Statistical tests are reported for mBERT only (Appendix~\ref{app:significance}) and should be interpreted cautiously given the small number of runs; the LaBSE three-seed comparisons are descriptive and do not establish the cause of degradation.
-
-% ============================================================
-
 \section{Conclusion}
 \label{sec:conclusion}
 
 This paper investigated contextual cross-lingual embedding alignment for Burmese, combining LangRank-based transfer-language selection with a lightweight linear alignment layer over a frozen encoder. Across five pairs, alignment improved retrieval over the frozen mBERT baseline in every case (16\%--124\%). Under the evaluated configuration, Vietnamese achieved the strongest contextual performance, whereas Chinese obtained the highest raw overall P@1. Experiments with LaBSE showed that CCWR alignment decreased retrieval accuracy relative to the frozen LaBSE baseline across all five language pairs, with the direction of degradation reproduced across three random seeds per pair.
+
+\section{Limitations}
+\label{sec:limitations}
+
+This study evaluates cross-lingual representation
+alignment primarily through word-level retrieval,
+without examining its impact on downstream Burmese
+NLP tasks. Future work could investigate whether
+improvements in retrieval accuracy translate into
+better performance on tasks such as named entity
+recognition, part-of-speech tagging, and text
+classification.
+
+Our experiments use frozen multilingual encoders
+with a lightweight linear alignment layer.
+Future work could compare this approach with
+partial or full encoder fine-tuning and
+alternative alignment architectures. Furthermore, the contrasting
+results between mBERT and LaBSE suggest that
+alignment effectiveness depends on the underlying
+encoder, motivating further investigation into
+the factors contributing to LaBSE's performance
+degradation.
+
+Evaluation data also differ across language pairs:
+Burmese--Turkish and Burmese--Persian use
+OpenSubtitles, whereas the other pairs use ALT.
+These domain differences limit direct comparisons
+across languages. Future studies could employ
+more consistent evaluation datasets and expand
+the range of transfer languages and corpus sizes.
+Finally, although additional random seeds were
+evaluated, broader multi-seed experiments would
+strengthen evidence for the robustness and
+generalizability of the findings.
+
+% ============================================================
 
 % Bibliography
 \bibliography{custom}
@@ -597,7 +917,7 @@ rather than across alternative initialization strategies. With three runs per pa
 \section{Additional LaBSE Seed Runs}
 \label{app:labse_seeds}
 
-We repeated the 20k forward-alignment experiments with LaBSE using seeds 1 and 2 in addition to the original seed 42. All runs used the same input data paths and experimental configuration, with the random seed varied. Table~\ref{tab:labse_seed_runs} reports overall P@1, the mean and sample standard deviation across three aligned runs, and the percentage-point difference from the fixed frozen baseline. These comparisons assess run-to-run variability; no statistical significance test is performed for LaBSE.
+We repeated the 20k forward-alignment experiments with LaBSE using seeds 1 and 2 in addition to the original seed 42. All three runs used the same datasets and experimental configuration, differing only in the random seed. Table~\ref{tab:labse_seed_runs} reports the overall P@1 scores, the mean and sample standard deviation across the three aligned runs, and the percentage-point difference relative to the fixed frozen baseline. These comparisons assess run-to-run variability; no statistical significance test was performed for LaBSE.
 
 \begin{table}[t]
 \centering
@@ -649,7 +969,7 @@ my--tr & \mytext{မင်းကို} & sana & Otur & Grammatical mismatch \\
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:qualitative_examples} gives one genuine correct retrieval per pair, excluding pure numeral matches to avoid overstating the method's semantic alignment ability. The Japanese and Chinese entries illustrate the tokenization caveat discussed above: both are single characters rather than multi-character words.
+Table~\ref{tab:qualitative_examples} presents one retrieval marked correct against the silver references for each language pair, excluding pure numeral matches. The Japanese and Chinese entries illustrate the tokenization caveat discussed above: both are single characters rather than multi-character words.
 
 \begin{table}[h]
 \centering
